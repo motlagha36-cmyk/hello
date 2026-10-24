@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>میای بریم بیرون صحبت کنیم؟ 💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#ff4d8d;--pink2:#ff85b3;--rose:#ffd6e7;--cream:#fff7fb;--text:#5a2342;--muted:#a1688a;color-scheme:light}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:calc(20px + env(safe-area-inset-top,0px)) 18px calc(20px + env(safe-area-inset-bottom,0px));overflow-x:hidden;
+  background:radial-gradient(circle at 20% 15%,#ffe3f0 0,transparent 45%),radial-gradient(circle at 85% 85%,#ffd0e4 0,transparent 45%),linear-gradient(160deg,#ffb3d1,#ff8fbd 55%,#ffa8c8)}
+.float{position:fixed;bottom:-40px;pointer-events:none;z-index:0;animation:rise linear forwards;opacity:.85}
+@keyframes rise{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+.card{position:relative;z-index:1;width:100%;max-width:430px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-radius:34px;padding:34px 24px 30px;
+  text-align:center;box-shadow:0 25px 60px rgba(190,40,100,.35),0 0 0 6px rgba(255,255,255,.55);min-height:380px;display:flex;flex-direction:column;justify-content:center;gap:16px;animation:pop .5s ease}
+@keyframes pop{from{transform:scale(.92) translateY(14px);opacity:0}}
+.big{font-size:3.4rem;animation:beat 1.2s infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.18)}30%{transform:scale(1)}45%{transform:scale(1.12)}}
+h1{margin:0;font-size:1.55rem;font-weight:800;line-height:1.7;background:linear-gradient(90deg,#ff2f7d,#ff7ab0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{margin:0;color:var(--muted);font-size:.95rem;min-height:1.6em}
+.btn{font-family:inherit;border:0;border-radius:20px;padding:14px 20px;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .15s}
+.btn:active{transform:scale(.95)}
+.yes{background:linear-gradient(135deg,#ff2f7d,#ff6aa5);color:#fff;font-size:1.15rem;padding:16px 30px;box-shadow:0 10px 24px rgba(255,47,125,.45)}
+.no{background:#f1e6ec;color:#7a5f6e;z-index:50}
+.row{display:flex;gap:16px;justify-content:center;align-items:center;min-height:120px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.wide{grid-template-columns:1fr}
+.opt{background:var(--cream);color:var(--text);border:2px solid var(--rose);display:flex;flex-direction:column;gap:2px;align-items:center}
+.opt small{color:var(--muted);font-weight:400}
+.opt:hover{border-color:var(--pink2)}
+.opt.sel{background:var(--pink);color:#fff;border-color:var(--pink)}
+input{font-family:inherit;width:100%;padding:12px 14px;border-radius:16px;border:2px dashed var(--pink2);background:#fff;text-align:center;font-size:.95rem;color:var(--text);outline:none}
+.dots{display:flex;gap:8px;justify-content:center}.dot{width:9px;height:9px;border-radius:50%;background:var(--rose)}.dot.on{background:var(--pink)}
+.sum{background:var(--cream);border:2px solid var(--rose);border-radius:20px;padding:14px 16px;text-align:right;line-height:2.1;font-size:.98rem}
+.share{display:grid;gap:10px}.wa{background:#25d366;color:#fff}.tg{background:#2aabee;color:#fff}.cp{background:#fff;color:var(--pink);border:2px solid var(--pink)}
+</style>
+</head>
+<body>
+<div class="card" id="app"></div>
+<script>
+const $=s=>document.querySelector(s), app=$('#app');
+const S={step:0,place:'',custom:'',day:'',time:''};
+const PLACES=[['☕','کافه'],['🍽️','رستوران'],['🌳','پارک'],['🍦','بستنی و قدم‌زدن'],['🎬','سینما'],['🌅','یه جای آروم']];
+const TIMES=['۱۰ صبح','۱۲ ظهر','۴ عصر','۶ عصر','۸ شب','۹ شب'];
+const TAUNTS=['نه رو نمی‌تونی بزنی عزیزم 😘','فرار کرد 🏃‍♂️💨','بی‌فایده‌ست، بزن آره دیگه 💖','دکمه‌ی آره منتظرته 🥺','تلاش نکن، اینو نمی‌تونی بگیری 😏','دلت نمیاد بگی نه 💕','آخه نه چیه؟ بزن آره 🌸','دستت به نه نمی‌رسه 😂','فقط یه آره‌ست، سخت نیست 💗','باشه باشه، ولی آره قشنگ‌تره 🥰'];
+
+/* floating hearts */
+function heart(e){const h=document.createElement('span');h.className='float';h.textContent=e||['💖','💗','💕','🌸','✨','💘'][Math.random()*6|0];
+  h.style.left=Math.random()*100+'vw';h.style.fontSize=(14+Math.random()*26)+'px';h.style.animationDuration=(6+Math.random()*7)+'s';
+  document.body.appendChild(h);h.addEventListener('animationend',()=>h.remove());}
+setInterval(heart,700);for(let i=0;i<8;i++)setTimeout(heart,i*150);
+function burst(){for(let i=0;i<45;i++)setTimeout(()=>heart(),i*40);}
+
+function dots(){return `<div class="dots">${[1,2,3,4].map(i=>`<i class="dot ${i<=S.step?'on':''}"></i>`).join('')}</div>`}
+
+function weekDays(){
+  let wd,dm;try{wd=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{weekday:'long'});dm=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{day:'numeric',month:'long'});}
+  catch(e){wd=new Intl.DateTimeFormat('fa-IR',{weekday:'long'});dm=new Intl.DateTimeFormat('fa-IR',{day:'numeric',month:'long'});}
+  const now=new Date();let left=(5-now.getDay()+7)%7+1;if(left<3)left=7; // until Friday
+  const out=[];for(let i=0;i<left;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);
+    out.push({w:(i===0?'امروز · ':'')+wd.format(d),d:dm.format(d)});}
+  return out;}
+
+function render(){([s0,s1,s2,s3,s4][S.step])();}
+
+function s0(){
+  app.innerHTML=`<div class="big">💌</div><h1>میای بریم بیرون صحبت کنیم؟</h1><p class="sub" id="taunt"></p>
+  <div class="row"><button class="btn yes" id="yes">آره، میام 💖</button><button class="btn no" id="no" tabindex="-1">نه</button></div>`;
+  const yes=$('#yes'),no=$('#no'),t=$('#taunt');let n=0;
+  yes.onclick=()=>{S.step=1;burst();render();};
+  function dodge(){n++;no.style.position='fixed';
+    no.style.left=(10+Math.random()*(innerWidth-no.offsetWidth-20))+'px';
+    no.style.top=(10+Math.random()*(innerHeight-no.offsetHeight-20))+'px';
+    t.textContent=TAUNTS[Math.random()*TAUNTS.length|0];
+    yes.style.transform=`scale(${Math.min(1+n*.05,1.45)})`;}
+  const stop=e=>{e.preventDefault();e.stopPropagation();dodge();};
+  no.addEventListener('pointerdown',stop);no.addEventListener('click',stop);
+  no.addEventListener('touchstart',stop,{passive:false});no.addEventListener('mouseenter',dodge);no.addEventListener('focus',dodge);
+  document.addEventListener('pointermove',e=>{if(S.step)return;const r=no.getBoundingClientRect();
+    if(Math.hypot(e.clientX-(r.left+r.width/2),e.clientY-(r.top+r.height/2))<85)dodge();});
+}
+
+function s1(){
+  app.innerHTML=`${dots()}<div class="big">📍</div><h1>کجا بریم؟</h1><p class="sub">یه جا انتخاب کن 🥰</p>
+  <div class="grid">${PLACES.map(p=>`<button class="btn opt" data-p="${p[1]}"><span style="font-size:1.6rem">${p[0]}</span>${p[1]}</button>`).join('')}</div>
+  <input id="cust" placeholder="اسم جای دلخواهت (اختیاری) ✍️">`;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{S.place=b.dataset.p;S.custom=$('#cust').value.trim();S.step=2;render();});
+}
+
+function s2(){
+  app.innerHTML=`${dots()}<div class="big">📅</div><h1>کدوم روز؟</h1><p class="sub">همین هفته 💕</p>
+  <div class="grid wide">${weekDays().map(x=>`<button class="btn opt" data-d="${x.w} ${x.d}"><b>${x.w}</b><small>${x.d}</small></button>`).join('')}</div>`;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{S.day=b.dataset.d;S.step=3;render();});
+}
+
+function s3(){
+  app.innerHTML=`${dots()}<div class="big">⏰</div><h1>چه ساعتی؟</h1><p class="sub">یه ساعت قشنگ انتخاب کن 💖</p>
+  <div class="grid">${TIMES.map(t=>`<button class="btn opt" data-t="${t}">${t}</button>`).join('')}</div>`;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{S.time=b.dataset.t;S.step=4;burst();render();});
+}
+
+function s4(){
+  const place=S.place+(S.custom?` (${S.custom})`:'');
+  const msg=`آره میام 💖\n📍 مکان: ${place}\n📅 روز: ${S.day}\n⏰ ساعت: ${S.time}`;
+  try{localStorage.setItem('lets-talk',JSON.stringify({...S,at:new Date().toISOString()}));}catch(e){}
+  app.innerHTML=`<div class="big">🎉</div><h1>عالیه! قرارمون ثبت شد</h1>
+  <div class="sum">📍 ${place}<br>📅 ${S.day}<br>⏰ ${S.time}</div>
+  <p class="sub">حالا جوابت رو برام بفرست 💌</p>
+  <div class="share">
+    <a class="btn wa" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}">ارسال در واتساپ</a>
+    <a class="btn tg" style="text-decoration:none" target="_blank" rel="noopener" href="https://t.me/share/url?url=%20&text=${encodeURIComponent(msg)}">ارسال در تلگرام</a>
+    <button class="btn cp" id="cp">کپی متن 📋</button>
+  </div>`;
+  $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText(msg);$('#cp').textContent='کپی شد ✅';}catch(e){prompt('کپی کن:',msg);}};
+}
+render();
+</script>
+</body>
+</html>
